@@ -1,0 +1,25 @@
+(define-syntax test
+  (syntax-rules ()
+    ( (test def res )
+      (begin
+        (let ((xs (quote def))
+              (result res))
+          (list xs result))))))
+
+(define (run-test xs)
+  (newline)
+  (write (car xs))
+  (let ((have (eval (car xs) (interaction-environment)))
+        (want (cadr xs)))
+    (if (equal? want have)
+        (begin (display "done") #t)
+        (begin (display "fail") (newline) (display "wanted: ") (display want) (newline) (display "have: ") (display have) #f))))
+
+(define (run-tests tests)
+  (define (loop test1 res)
+    (if (null? test1)
+        (begin (newline) res)
+        (if (run-test (car test1))
+            (loop (cdr test1) res)
+            (loop (cdr test1) #f))))
+  (loop tests #t))

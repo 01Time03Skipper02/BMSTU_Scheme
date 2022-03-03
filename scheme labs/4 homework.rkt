@@ -44,11 +44,11 @@
 (lazy-head (lazy-cons 4 (lazy-cons 5 (lazy-cons 6 7))) 3)
 
 (define (lazy-ref xs k)
-  (define (loop k)
-    (if (= k 0)
-        xs
-        (lazy-ref (lazy-cdr xs) (- k 1))))
-  (loop k))
+  (define (loop xs i k)
+    (if (< i k)
+        (loop (lazy-cdr xs) (+ i 1) k)
+        (lazy-car xs)))
+  (loop xs 1 k))
 (lazy-ref (lazy-cons 4 (lazy-cons 5 (lazy-cons 6 7))) 0)
 
 (define (naturals start)
@@ -62,9 +62,6 @@
 (define (lazy-factorial n)
   (lazy-car (lazy-ref (lazy-factorial-generate) n)))
 
-(begin
-  (display (lazy-factorial 10)) (newline)
-  (display (lazy-factorial 50)) (newline))
 
 ;;#3
 (define (read-words)
